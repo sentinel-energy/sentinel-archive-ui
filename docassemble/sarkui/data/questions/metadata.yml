@@ -1,0 +1,43 @@
+---
+modules:
+  - sark.metatools
+---
+mandatory: True
+question: Provide a package name and title
+fields:
+  - Name: pkg_name
+  - Title: pkg_title
+under: |
+  The name may only have the following characters:
+  - alphanumeric: 0-9, a-z, A-Z, hyphen (`-`), underscore (`_`)
+  - diacritical marks like, accents and umlauts are not allowed
+  - no white space characters are allowed
+
+  The title may have any printable character, including diacritical marks.
+---
+question: Choose a license group
+field: lic_t
+dropdown:
+  code: |
+    ODLS_GROUPS
+# TODO: additional info about choice
+---
+question: Choose a license
+field: lic_key
+dropdown:
+  code: |
+    list_licenses(lic_t)
+# TODO: additional info about choice
+---
+mandatory: True
+question: You chose the ${ lic_name } license
+subquestion: |
+  The ${ lic_title } can be found at:
+  ${ lic_path }.
+---
+code: |
+  lic = get_license(lic_key, lic_t)
+  lic_name = lic["name"]
+  lic_path = lic["path"]
+  lic_title = lic["title"]
+---

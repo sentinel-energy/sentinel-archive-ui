@@ -1,0 +1,33 @@
+---
+modules:
+  - docassemble.sarkui.io
+---
+mandatory: True
+question: Upload a sample CSV file
+fields:
+  - CSV file: csvfile
+    datatype: file
+under: |
+  [TARGET preview]
+check in: preview_csv
+---
+template: preview_csv
+content: |
+  ${ csv_preview(csvfile, 3) }
+target: preview
+---
+mandatory: True
+question: Sample data from CSV
+subquestion: |
+  First five rows from the CSV:
+
+  ${ csv_preview(csvfile, 3) }
+continue button field: sample_shown
+---
+mandatory: True
+question: Sample CSV data types
+subquestion: |
+  Columns in the sample CSV were interpreted as the following data types:
+
+  ${ csv_dtypes(csvfile) }
+---
