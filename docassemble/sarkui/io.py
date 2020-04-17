@@ -39,7 +39,7 @@ def dfT_markdown(df) -> str:
     txttbl = tabulate(
         # transposed
         (chain([k], v) for k, v in df.to_dict(orient="list").items()),
-        headers=chain(["columns"], range(len(df))),
+        headers=tuple(chain(["columns"], map(str, range(len(df))))),
         # FIXME: doesn't respect float format due to heterogeneous columns
         floatfmt=_FLTFMT,
         tablefmt=_MD_TABLEFMT,
