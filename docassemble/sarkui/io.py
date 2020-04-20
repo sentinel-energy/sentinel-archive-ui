@@ -10,18 +10,18 @@ _MD_TABLEFMT = "presto"
 _FLTFMT = ".3g"
 
 
-def csv_sample(csvfile, nrows: int = 5):
+def csv_sample(csvfile, nrows: int = 3):
     strstr = StringIO(csvfile.slurp())
     return pd.read_csv(strstr, nrows=nrows)
 
 
-def csv_preview(csvfile, nrows: int = 5) -> str:
+def csv_preview(csvfile, nrows: int = 3) -> str:
     return dfT_markdown(csv_sample(csvfile, nrows))
 
 
 def csv_dtypes(csvfile) -> str:
     df = df_dtypes(csv_sample(csvfile))
-    return fixtbl(df_markdown(df))
+    return df_markdown(df)
 
 
 def df_dtypes(df):
@@ -32,7 +32,7 @@ def df_dtypes(df):
 
 # dataframe converters
 def df_markdown(df) -> str:
-    return df.to_markdown(tablefmt=_MD_TABLEFMT, showindex=False)
+    return fixtbl(df.to_markdown(tablefmt=_MD_TABLEFMT, showindex=False))
 
 
 def dfT_markdown(df) -> str:

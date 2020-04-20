@@ -54,7 +54,7 @@ def test_df_markdown(csvfile):
     df = _io.csv_sample(csvfile)
     txttbl = _io.df_markdown(df)
     # check: presto format, no index
-    assert check_md_flavour(txttbl, df, flavour="presto")
+    assert check_md_flavour(txttbl, df, flavour="php")
 
 
 def test_dfT_markdown(csvfile):
