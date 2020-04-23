@@ -14,7 +14,7 @@ from docassemble.sarkui.schema import (
 def test_df_schema(csvfile, schema):
     df = csv_sample(csvfile)
     res = df_schema(df, schema)
-    assert list(res.keys()) == list(df.columns)
+    assert list(res.keys()) == df.columns.to_list()
     assert all(
         hasattr(v, "dtype") and hasattr(v, "edit") and v.edit is False
         for _, v in res.items()
@@ -26,8 +26,9 @@ def test_df_schema_edit_flags(csvfile, schema):
     df = csv_sample(csvfile)
     schema = df_schema(df, schema)
     res = df_schema_edit_flags(schema)
-    assert list(glom(res, ["datatype"])) == ["yesno"] * len(res)
-    assert glom(res, [(tuple, "0")]) == list(df.columns)
+    assert glom(res, ["datatype"]) == ["yesno"] * len(res)
+    # NOTE: index 0 relies on deterinistic dictionary order
+    assert glom(res, [(tuple, "0")]) == df.columns.to_list()
     assert glom(res, [(T.values(), tuple, "0")]) == [
         _EDIT_FLAG_FMT.format(name=schema.instanceName, col=col)
         for col in df.columns
