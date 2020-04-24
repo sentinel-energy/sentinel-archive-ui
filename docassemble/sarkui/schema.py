@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from docassemble.sarkui.io import df_dtypes, df_markdown
 
@@ -32,7 +32,7 @@ def df_schema_flags_prompt(df, flags):
     return df_markdown(df)
 
 
-def df_schema_dtype(df, flags) -> List[Dict[str, str]]:
+def df_schema_dtype(df, flags) -> List[Dict[str, Union[str, List]]]:
     # TODO: conditional additional inputs, e.g. format string for timestamps
     # {
     #     "datetime_fmt_str": "datetime_fmt",
