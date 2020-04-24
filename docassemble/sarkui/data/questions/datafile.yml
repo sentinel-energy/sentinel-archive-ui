@@ -1,36 +1,83 @@
 ---
 modules:
   - docassemble.sarkui.io
+  - docassemble.sarkui.schema
+---
+objects:
+  - edit_flags: DADict
 ---
 mandatory: True
 question: Upload a sample CSV file
 fields:
   - CSV file: csvfile
     datatype: file
-under: |
-  [TARGET preview]
-check in: preview_csv
+# under: |
+#   [TARGET preview]
+# check in: preview_csv
+# ---
+# template: preview_csv
+# content: |
+#   ${ csv_preview(csvfile) }
+# target: preview
 ---
-template: preview_csv
-content: |
-  ${ csv_preview(csvfile) }
-target: preview
----
+mandatory: True
 code: |
   df = csv_sample(csvfile)
-  dftype = df_dtypes(df)
+---
 mandatory: True
 question: Sample data from CSV
 subquestion: |
-  First five rows from the CSV:
+  First three rows from the CSV:
 
   ${ dfT_markdown(df) }
-continue button field: sample_shown
+
+continue button field: shown
 ---
 mandatory: True
-question: Sample CSV data types
+question: CSV data type prompt
 subquestion: |
   Columns in the sample CSV were interpreted as the following data types:
 
-  ${ df_markdown(dftype) }
+  ${ df_schema_flags_prompt(df, edit_flags) }
+fields:
+  - code: |
+      df_schema_flags(df, edit_flags)
+continue button field: edit_flags.gathered
 ---
+mandatory: True
+question: Columns to edit
+subquestion: |
+  <%
+  col_dtypes = df_dtypes(df)
+  idx = col_dtypes["columns"].map(edit_flags)
+  %>
+
+  ${ df_markdown(col_dtypes[idx]) }
+continue button field: shown
+---
+mandatory: True
+question: |
+  Choose data types for the following columns:
+subquestion: |
+  % for col, flag in edit_flags.items():
+  % if flag:
+  - ${col}: ${df[col].dtype} -> [FIELD edit_flags['${col}']]
+      - Examples: ${df[col][:5].to_list()}
+  % endif
+  % endfor
+fields:
+  - code: |
+      df_schema_dtype(df, edit_flags)
+---
+mandatory: True
+code: |
+  df = df_fix_schema(df, edit_flags)
+---
+mandatory: True
+question: Final schema
+subquestion: |
+
+  ${ df_markdown(df_dtypes(df)) }
+buttons:
+  - Exit: exit
+  - Restart: restart
